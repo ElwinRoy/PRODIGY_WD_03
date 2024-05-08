@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe</title>
+<style>
+  body {
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+  }
+  h1 {
+    color: #333;
+  }
+  .board {
+    display: inline-block;
+    margin-top: 20px;
+    border-collapse: collapse;
+    border: 5px solid #333;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  .board td {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #333;
+    font-size: 50px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+  }
+  .board td:hover {
+    background-color: #f9f9f9;
+  }
+  .cell {
+    line-height: 100px;
+    transition: transform 0.2s ease;
+  }
+  .cell:hover {
+    transform: scale(1.1);
+  }
+  .playerX {
+    color: #ff6363; 
+  }
+  .playerO {
+    color: #63a1ff; 
+  }
+</style>
+</head>
+<body>
+<h1>Tic Tac Toe</h1>
+<table class="board" id="board">
+  <tr>
+    <td class="cell" data-row="0" data-col="0"></td>
+    <td class="cell" data-row="0" data-col="1"></td>
+    <td class="cell" data-row="0" data-col="2"></td>
+  </tr>
+  <tr>
+    <td class="cell" data-row="1" data-col="0"></td>
+    <td class="cell" data-row="1" data-col="1"></td>
+    <td class="cell" data-row="1" data-col="2"></td>
+  </tr>
+  <tr>
+    <td class="cell" data-row="2" data-col="0"></td>
+    <td class="cell" data-row="2" data-col="1"></td>
+    <td class="cell" data-row="2" data-col="2"></td>
+  </tr>
+</table>
+<script>
+  const cells = document.querySelectorAll('.cell');
+  let currentPlayer = 'X';
+  let gameOver = false;
+
+  cells.forEach(cell => {
+    cell.addEventListener('click', handleClick);
+  });
+
+  function handleClick() {
+    if (gameOver || this.textContent !== '') return;
+    this.textContent = currentPlayer;
+    this.classList.add(currentPlayer === 'X' ? 'playerX' : 'playerO');
+    if (checkWin()) {
+      alert(currentPlayer + ' wins!');
+      gameOver = true;
+      return;
+    }
+    if (checkDraw()) {
+      alert('It\'s a draw!');
+      gameOver = true;
+      return;
+    }
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+  }
+
+  function checkWin() {
+    const winningCombos = [
+      ['00', '01', '02'], ['10', '11', '12'], ['20', '21', '22'], 
+      ['00', '10', '20'], ['01', '11', '21'], ['02', '12', '22'], 
+      ['00', '11', '22'], ['02', '11', '20'] 
+    ];
+    return winningCombos.some(combo => {
+      const [a, b, c] = combo;
+      const cellA = document.querySelector(`[data-row="${a[0]}"][data-col="${a[1]}"]`).textContent;
+      const cellB = document.querySelector(`[data-row="${b[0]}"][data-col="${b[1]}"]`).textContent;
+      const cellC = document.querySelector(`[data-row="${c[0]}"][data-col="${c[1]}"]`).textContent;
+      return cellA && cellA === cellB && cellA === cellC;
+    });
+  }
+
+  function checkDraw() {
+    return [...cells].every(cell => cell.textContent !== '');
+  }
+</script>
+</body>
+</html>
